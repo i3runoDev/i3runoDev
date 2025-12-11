@@ -1,0 +1,67 @@
+import turtle, time
+
+myPen = turtle.Turtle()
+myPen.shape("turtle")
+myPen.speed(10)
+myPen.tracer(0)
+window = turtle.Screen()
+window.bgcolor("#DDDDDD")
+
+def drawChessboard():
+   myPen.penup()
+   myPen.setheading(0)
+   myPen.color("#000000")
+   for i in range(0,8):
+      myPen.goto(-145 + i * 40, 170)
+      myPen.write(str(i), None, None, font=("Arial",16, "normal"))
+      myPen.goto(-182, 130 - i * 40)
+      myPen.write(str(i), None, None, font=("Arial",16, "normal"))
+      
+   myPen.fillcolor("#880088")   
+   myPen.penup()
+   myPen.goto(-120,-120)
+   x = -160
+   y = -160
+   odd = 0
+   for i in range(0,64,2):
+      odd = (i//8)%2
+      x = -160 + 40*(odd+(i%8))
+      y = -160 + 40*(i//8)
+      myPen.goto(x,y)
+      myPen.begin_fill()
+      for side in range(4):
+         myPen.forward(40)
+         myPen.left(90)
+      myPen.end_fill()
+      myPen.penup()   
+
+   myPen.goto(-160,-160)
+   myPen.pendown()
+   for side in range(4):
+      myPen.forward(320)
+      myPen.left(90)      
+      
+   myPen.hideturtle()
+   myPen.getscreen().update()	   
+
+
+def displayPieces(board):
+   myPen.penup()
+   myPen.setheading(90)
+   for i in range(0,8):
+      for j in range(0,8):
+         if board[i][j].strip()!="":
+             myPen.goto(-140+j*40,140-i*40)
+             image = "images/" + board[i][j].strip() + ".png"
+             myPen.getscreen().addshape(image)
+             myPen.shape(image)
+             myPen.stamp()
+   myPen.getscreen().update()
+
+def refreshBoard(board,delay=0):
+   time.sleep(delay)
+   myPen.clear()
+   drawChessboard() 
+   displayPieces(board)
+   myPen.getscreen().update()
+   

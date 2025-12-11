@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pac-Man Simples</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            margin: 0;
+            color: white;
+            font-family: monospace;
+        }
+        #game-container {
+            display: grid;
+            /* Define 10 colunas e linhas de 30px cada */
+            grid-template-columns: repeat(10, 30px);
+            grid-template-rows: repeat(10, 30px);
+            border: 2px solid #000088;
+        }
+        .cell {
+            width: 30px;
+            height: 30px;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .wall {
+            background-color: #000088;
+            border-radius: 4px;
+        }
+        .dot {
+            width: 6px;
+            height: 6px;
+            background-color: white;
+            border-radius: 50%;
+        }
+        .pacman {
+            width: 28px;
+            height: 28px;
+            background-color: yellow;
+            border-radius: 50%;
+            position: relative;
+            /* Animação de boca simples */
+            animation: chomp 0.5s infinite steps(1);
+        }
+
+        @keyframes chomp {
+            0% { clip-path: polygon(50% 50%, 100% 0%, 100% 100%); }
+            50% { clip-path: polygon(50% 50%, 100% 50%, 100% 50%); }
+            100% { clip-path: polygon(50% 50%, 100% 0%, 100% 100%); }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container"></div>
+    <script>
+        const container = document.getElementById('game-container');
+        const GRID_SIZE = 10;
+        let pacmanX = 0;
+        let pacmanY = 0;
+
+        // Mapa simples: 0=caminho com ponto, 1=parede
+        let gameMap = [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+            [1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
+            [1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+            [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ];
+
+        function drawMap() {
+            container.innerHTML = '';
+            for (let y = 0; y < GRID_SIZE; y++) {
+                for (let x = 0; x < GRID_SIZE; x++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    if (gameMap[y][x] === 1) {
+                        cell.classList.add('wall');
+                    } else if (gameMap[y][x] === 0) {
+                        // Coloca um ponto se não for a posição inicial do pacman
+                        if (!(x === pacmanX && y === pacmanY)) {
+                            const dot = document.createElement('div');
+                            dot.classList.add('dot');
+                            cell.appendChild(dot);
+                        }
+                    }
+                    container.appendChild(cell);
+                }
+            }
+            // Adiciona o Pac-Man na posição atual
+            const pacmanCellIndex = pacmanY * GRID_SIZE + pacmanX;
+            const pacmanCell = container.children[pacmanCellIndex];
+            const pacman = document.createElement('div');
+            pacman.classList.add('pacman');
+            // Remove o ponto se houver um e adiciona o pacman
+            if (pacmanCell.querySelector('.dot')) {
+                pacmanCell.removeChild(pacmanCell.querySelector('.dot'));
+            }
+            pacmanCell.appendChild(pacman);
+        }
+
+        function movePacman(dx, dy) {
+            const newX = pacmanX + dx;
+            const newY = pacmanY + dy;
+
+            // Verifica limites e paredes
+            if (newX >= 0 && newX < GRID_SIZE && newY >= 0 && newY < GRID_SIZE && gameMap[newY][newX] !== 1) {
+                pacmanX = newX;
+                pacmanY = newY;
+                // Marcar ponto como comido
+                if (gameMap[pacmanY][pacmanX] === 0) {
+                    gameMap[pacmanY][pacmanX] = 2; // 2 significa comido
+                }
+                drawMap();
+            }
+        }
+
+        // Event listener para teclas de seta
+        document.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 'ArrowUp':
+                    movePacman(0, -1);
+                    break;
+                case 'ArrowDown':
+                    movePacman(0, 1);
+                    break;
+                case 'ArrowLeft':
+                    movePacman(-1, 0);
+                    break;
+                case 'ArrowRight':
+                    movePacman(1, 0);
+                    break;
+            }
+        });
+
+        // Inicia o jogo desenhando o mapa
+        drawMap();
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Velocidade de Internet</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f0f0; }
+        .container { text-align: center; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        #resultado { margin-top: 20px; font-size: 18px; font-weight: bold; }
+        #status { margin-top: 10px; font-size: 14px; color: gray; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Teste de Velocidade</h1>
+        <button onclick="iniciarTeste()">Iniciar Teste</button>
+        <div id="status">Aguardando...</div>
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        // URL de um arquivo de teste conhecido (um arquivo grande é melhor para precisão)
+        // Você deve hospedar seu próprio arquivo de teste em seu servidor para resultados precisos.
+        // O exemplo abaixo usa uma imagem pública.
+        const URL_TESTE = 'images.unsplash.com';
+        const TAMANHO_ARQUIVO_BYTES = 527584; // Tamanho aproximado em bytes (527 KB)
+
+        async function iniciarTeste() {
+            const statusElem = document.getElementById('status');
+            const resultadoElem = document.getElementById('resultado');
+            statusElem.textContent = 'Testando download...';
+            resultadoElem.textContent = '';
+
+            const inicioTempo = new Date().getTime();
+
+       
